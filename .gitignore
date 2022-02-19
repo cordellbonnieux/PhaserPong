@@ -1,2 +1,4 @@
 node_modules/
 .chache/
+node_modules/*
+.chache/*
