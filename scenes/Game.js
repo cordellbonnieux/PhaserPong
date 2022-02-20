@@ -50,7 +50,6 @@ export default class Game extends Phaser.Scene {
         // AI paddle to follow ball
         const num = Phaser.Math.Between(1,100)
         const move = num > 70 ? true : false
-        
         if (move && this.ball.x > 400 && this.ball.body.velocity.x > 0) {
             if (this.paddleRight.y > this.ball.y) {
                 this.paddleRight.y -= 5
