@@ -6,8 +6,6 @@ export default class Game extends Phaser.Scene {
         this.ball
         this.paddleLeft
         this.paddleRight
-        this.randX
-        this.randY
         this.moveUp = false
         this.moveDown = false
     }
@@ -15,8 +13,6 @@ export default class Game extends Phaser.Scene {
         this.paddleLeft = this.add.rectangle(50, 250, 20, 100, 0xffffff, 1)
         this.paddleRight = this.add.rectangle(750, 250, 20, 100, 0xffffff, 1)
         this.ball = this.add.circle(400, 250, 10, 0xffffff, 1)
-        this.randX = -200 //this.getRand()
-        this.randY = 0 //this.getRand()
     }
 
     create() {
@@ -24,7 +20,7 @@ export default class Game extends Phaser.Scene {
         this.physics.add.existing(this.ball)
         this.ball.body.setBounce(1, 1)
         this.ball.body.setCollideWorldBounds(true, 1, 1)
-        this.ball.body.setVelocity(this.randX, this.randY)
+        this.ball.body.setVelocity(-(this.getRand()), this.getRand())
 
         // add paddles
         this.physics.add.existing(this.paddleLeft, true)
@@ -50,13 +46,22 @@ export default class Game extends Phaser.Scene {
             this.paddleLeft.y += 10
         }
         this.paddleLeft.body.updateFromGameObject()
-    }
 
-    render() {
-
+        // AI paddle to follow ball
+        const num = Phaser.Math.Between(1,100)
+        const move = num > 70 ? true : false
+        
+        if (move && this.ball.x > 400 && this.ball.body.velocity.x > 0) {
+            if (this.paddleRight.y > this.ball.y) {
+                this.paddleRight.y -= 5
+            } else if (this.paddleRight.y < this.ball.y) {
+                this.paddleRight.y += 5
+            }
+            this.paddleRight.body.updateFromGameObject()
+        }
     }
 
     getRand() {
-        return Phaser.Math.Between(-200, 200)
+        return Phaser.Math.Between(200, 300)
     }
 }
