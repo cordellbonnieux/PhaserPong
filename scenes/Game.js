@@ -93,8 +93,16 @@ export default class Game extends Phaser.Scene {
             this.paddleLeft.body.y = 250
             this.paddleRight.body.y = 250
 
-            // spawn 'click anywhere for next round' box
-            // add event listener, then hide it
+            // show pause menu
+            this.pauseMenu.visible = true
+
+            // add event listener to start round
+            if (this.input.activePointer.primaryDown) {
+                console.log('down')
+                this.pauseMenu.visible = false
+                this.playing = true 
+                this.ball.body.setVelocity(this.getRand(), this.getRand())
+            }
         }
 
     }
