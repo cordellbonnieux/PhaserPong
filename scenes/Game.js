@@ -7,6 +7,7 @@ export default class Game extends Phaser.Scene {
         this.paddleLeft
         this.paddleRight
         this.pauseMenu
+        this.canvas
         this.playing = false
         this.moveUp = false
         this.moveDown = false
@@ -25,6 +26,9 @@ export default class Game extends Phaser.Scene {
         // create ui elements
         this.score.text = this.add.text(290, 10, `Player: ${this.score.player} Computer: ${this.score.ai}`)
         this.pauseMenu = this.add.text(250, 350, 'click anywhere to start the round')
+
+        // get canvas element
+        this.canvas = this.sys.game.canvas
     }
     create() {
         // ball physics
@@ -72,11 +76,11 @@ export default class Game extends Phaser.Scene {
             }
 
             // adjust score based on ball pos
-            if (this.ball.body.x == 0 || this.ball.body.x == 800) {
+            if (this.ball.body.x == 0 || this.ball.body.x > (this.canvas.width - 25)) {
                 if (this.ball.body.x == 0) {
-                    this.score.ai += 1
-                } else if (this.ball.body.x == 800) {
-                    this.score.player += 1
+                    this.score.ai++
+                } else if (this.ball.body.x > (this.canvas.width - 25)) {
+                    this.score.player++
                 }
                 // update score
                 this.score.text.setText(`Player: ${this.score.player} Computer: ${this.score.ai}`)
@@ -86,27 +90,27 @@ export default class Game extends Phaser.Scene {
         } else {
             // freeze and center the ball
             this.ball.body.setVelocity(0, 0)
-            this.ball.body.x = 400
-            this.ball.body.y = 250
+            this.ball.x = 400
+            this.ball.y = 250
+            this.ball.body.updateFromGameObject()
 
             // recenter the paddles
-            this.paddleLeft.body.y = 250
-            this.paddleRight.body.y = 250
+            this.paddleLeft.y = 250
+            this.paddleRight.y = 250
+            this.paddleLeft.body.updateFromGameObject()
+            this.paddleRight.body.updateFromGameObject()
 
             // show pause menu
             this.pauseMenu.visible = true
 
             // add event listener to start round
             if (this.input.activePointer.primaryDown) {
-                console.log('down')
                 this.pauseMenu.visible = false
                 this.playing = true 
                 this.ball.body.setVelocity(this.getRand(), this.getRand())
             }
         }
-
     }
-
     getRand() {
         return Phaser.Math.Between(200, 300)
     }
